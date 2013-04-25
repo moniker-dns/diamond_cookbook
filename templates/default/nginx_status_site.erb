@@ -1,0 +1,15 @@
+server {
+    listen 127.0.0.1:<%=node[:diamond][:collectors][:NginxCollector][:req_port] %>;
+
+    server_name <%=node[:diamond][:collectors][:NginxCollector][:req_host] %>;
+
+    location <%=node[:diamond][:collectors][:NginxCollector][:req_path] %> {
+        stub_status on;
+        allow 127.0.0.1;
+        deny all;
+    }
+}
+
+
+
+

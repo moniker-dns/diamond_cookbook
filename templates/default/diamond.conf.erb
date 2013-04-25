@@ -7,7 +7,7 @@
 [server]
 
 # Handlers for published metrics.
-handlers = <%= node['diamond']['handlers'] %>
+handlers = diamond.handler.graphitepickle.GraphitePickleHandler
 
 # User diamond will run as
 # Leave empty to use the current user
@@ -51,7 +51,7 @@ days = 7
 ### Options for GraphiteHandler
 
 # Graphite server host
-host = <%= @graphite_ip %>
+host = <%= @graphite_pool[0] %>
 
 # Port to send metrics to
 port = 2003
@@ -63,7 +63,7 @@ timeout = 15
 ### Options for GraphitePickleHandler
 
 # Graphite server host
-host = <%= @graphite_ip %>
+host = <%= @graphite_pool[0] %>
 
 # Port to send metrics to
 port = 2004
@@ -118,16 +118,16 @@ timeout = 15
 # fqdn_rev    = hostname in reverse (com.example.www)
 # uname_short = Similar to uname -n, but only the first part
 # uname_rev   = uname -r in reverse (com.example.www)
-# hostname_method = fqdn_short
+hostname_method = fqdn_short
 
 # Path Prefix and Suffix
 # you can use one or both to craft the path where you want to put metrics
 # such as: %(path_prefix)s.$(hostname)s.$(path_suffix)s.$(metric)s
-# path_prefix = servers
+path_prefix = <%=node[:diamond][:default_path_prefix] %>
 # path_suffix =
 
 # Default Poll Interval (seconds)
-# interval = 300
+interval = <%=node[:diamond][:default_poll_interval] %>
 
 ################################################################################
 ### Options for logging

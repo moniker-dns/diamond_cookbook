@@ -1,24 +1,17 @@
 # install diamond and enable basic collectors
 
-graphite_pool = search("node", "role:graphite AND chef_environment:#{node.chef_environment}") || []
-graphite_pool << node if node.run_list.roles.include?('graphite')
-
-# reduce the graphite_pool down to just the IPs, private if we are in the same AZ, public if they are in a remove AZ
-graphite_pool.map! do |member|
-  server_ip = begin
-    if member.attribute?('meta_data')
-      if node.attribute?('meta_data') && (member['meta_data']['region'] == node['meta_data']['region'])
-        member['meta_data']['private_ipv4']
-      else
-        member['meta_data']['public_ipv4']
-      end
-    else
-      member['ipaddress']
-    end
-  end
+node.set[:graphite_pool] =  search_helper_best_ip(node[:diamond][:graphite_search], node[:diamond][:graphite_server]) do |ip, other_node|
+  ip
 end
 
-graphite_pool.uniq!
+# add ourselves if this is the graphite node, but only if we have an IP address
+node.set[:graphite_pool] << node[:ipaddress] if node.run_list.roles.include?('graphite') && !node[:ipaddress].nil?
+
+Chef::Log.info node[:graphite_pool]
+
+# remove any duplicates
+node.set[:graphite_pool] = node[:graphite_pool].uniq
+graphite_pool = node[:graphite_pool]
 
 if graphite_pool.length == 0
   Chef::Log.warn "No Graphite servers found. Bailing"
@@ -76,3 +69,4 @@ include_recipe 'diamond::network'
 include_recipe 'diamond::tcp'
 include_recipe 'diamond::loadavg'
 include_recipe 'diamond::cpu'
+include_recipe 'diamond::ntpd'

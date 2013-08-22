@@ -28,14 +28,12 @@ case node[:platform]
     end
 
     package "diamond" do
-      action :install
-      version node['diamond']['version']
+      action :upgrade
     end
 
   when "centos", "redhat", "fedora", "amazon", "scientific"
     package "diamond" do
-      action :install
-      version node['diamond']['version']
+      action :upgrade
     end
 end
 

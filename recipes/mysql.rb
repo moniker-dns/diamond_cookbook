@@ -2,6 +2,8 @@
 
 include_recipe 'diamond::default'
 
+package "python-mysqldb"
+
 collector_config "MySQLCollector" do
   path    node[:diamond][:collectors][:MySQLCollector][:path]
   host    node[:diamond][:collectors][:MySQLCollector][:host]

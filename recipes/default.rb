@@ -1,6 +1,6 @@
 # install diamond and enable basic collectors
 
-node.set[:graphite_pool] =  search_helper_best_ip(node[:diamond][:graphite_search], node[:diamond][:graphite_server]) do |ip, other_node|
+node.set[:graphite_pool] =  search_helper_best_ip(node[:diamond][:graphite_search], node[:diamond][:graphite_server], false) do |ip, other_node|
   ip
 end
 
